@@ -59,7 +59,7 @@ webmaster_verifications:
 # Web Analytics Settings
 analytics:
   google:
-    id: # fill in your Google Analytics ID
+    id: G-C469CEJ4NH # [jaoneol]2025-06-22 19:30, Google Analytics ID 추가 필요 - 검색 성능 추적용
   goatcounter:
     id: # fill in your GoatCounter ID
   umami:
@@ -103,7 +103,7 @@ avatar: https://avatars.githubusercontent.com/u/31051092?v=4
 
 # The URL of the site-wide social preview image used in SEO `og:image` meta tag.
 # It can be overridden by a customized `page.image` in front matter.
-social_preview_image: # string, local or CORS resources
+social_preview_image: https://ds2man.github.io/assets/img/homepage/DS2Man.png # [jaoneol]2025-06-22 19:30, 소셜 미리보기 이미지 추가
 
 # boolean type, the global switch for TOC in posts.
 toc: true
@@ -220,6 +220,10 @@ exclude:
   - purgecss.js
   - rollup.config.js
   - "package*.json"
+
+# GPT가 예방 차원으로 _config.xml에 robots.txt 추가 요청함. 해서 추가.(2025.06.22)
+include:
+  - robots.txt
 
 jekyll-archives:
   enabled: [categories, tags]
