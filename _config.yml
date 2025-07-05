@@ -156,6 +156,7 @@ baseurl: ""
 # 20240408 sitemap 위한 plugin 추가
 plugins:
   - jekyll-sitemap
+  - jekyll-feed
 
 # ------------ The following options are not recommended to be modified ------------------
 
