@@ -13,7 +13,7 @@ math: true
 pin: true
 ---
 
-LangChain offers a wide variety of built-in tools for search, math, web APIs, and more—but sometimes, you need something specific to your use case. That’s where **custom tools** come in.
+LangChain offers a wide variety of built-in tools for search, math, web APIs, and more. but sometimes, you need something specific to your use case. That’s where **custom tools** come in.
 
 In this post, we’ll explore what custom tools are, how to create them in LangChain, and when you should consider building your own.
 
@@ -21,8 +21,7 @@ In this post, we’ll explore what custom tools are, how to create them in LangC
 
 There are two ways to create a tool: using `@tool` or `Tool` from the `langchain_core.tools.tool` module. For flexible customization, the `@tool` decorator is more useful, so we'll use that. (The `Tool`-based approach will not be covered in this post.)
 
-**[Note!]** If possible, wrap built-in tools as custom tools as well—for the sake of code consistency!
-
+**[Note!]** If possible, wrap built-in tools as custom tools as well for the sake of code consistency!
 
 ### *python_repl_tool*
 
@@ -30,20 +29,21 @@ There are two ways to create a tool: using `@tool` or `Tool` from the `langchain
 from langchain_experimental.tools import PythonREPLTool
 from langchain_core.tools import tool
 
-# 도구 생성
 python_repl_tool_instance = PythonREPLTool()
 
 @tool
 def python_repl_tool(
-    code,
+    query: str,
 ):
     """
-    Use this to execute python code. If you want to see the output of a value,
-    you should print it out with `print(...)`. This is visible to the user.
+    Executes Python code in a REPL. 
+
+    To show the result to the user, use `print(...)`. 
+    Only printed output will be returned and visible.
     """
     result = ""
     try:
-        result = python_repl_tool_instance.invoke(code)
+        result = python_repl_tool_instance.invoke(query)
     except BaseException as e:
         print(f"Failed to execute. Error: {repr(e)}")
     finally:
@@ -59,21 +59,26 @@ print("==========="*4)
 code = "print(2 + 3 * 5)" # 17
 code = "print(sum([1, 2, 3, 4]))" # 10
 code = "import os; print(os.getcwd())" # d:\02.MyCode\GP-MyReference\13.MyLLM
-result = python_repl_tool.invoke(code) # repl_tool.run(code), ok!
+# result = python_repl_tool.invoke(code) # ok!
+result = python_repl_tool.invoke({"query" : code}) # ok!
 print("Result1:", result)  # → 50
 
 python_repl_tool.invoke("""
 def square(x):
     return x * x
 """)
-result = python_repl_tool.invoke("print(square(5))") # 25
+# result = python_repl_tool.invoke("print(square(5))") # 2ok!
+result = python_repl_tool.invoke({"query":"print(square(5))"}) # ok!
 print("Result2:", result)  # → 50
 ```
 
 ```bash
 ============================================
 tool name: python_repl_tool
-tool description: Use this to execute python code. If you want to see the output of a value, you should print it out with `print(...)`. This is visible to the user.
+tool description: Executes Python code in a REPL. 
+
+To show the result to the user, use `print(...)`. 
+Only printed output will be returned and visible.
 ============================================
 Result1: d:\02.MyCode\GP-MyReference\13.MyLLM
 
@@ -102,13 +107,18 @@ tavily_search_instance = TavilySearch(
 @tool
 def tavily_search_tool(query: str):
     """
-    Use this tool to search the web using Tavily.
+    Search the web using Tavily and return a list of relevant documents.
+
+    Provide a search query as input.
+    Returns a list of documents containing raw content from search results.
+    Use this tool to retrieve up-to-date web information.
     """
     try:
         return tavily_search_instance.invoke(query)
-    except BaseException as e:
-        print(f"Failed to search Tavily. Error: {repr(e)}")
-        return []
+    except Exception as e:
+        error_msg = f"[Tavily Search Error] {type(e).__name__}: {str(e)}"
+        print(error_msg)
+        return [{"error": error_msg}]
 ```
 
 ```python
@@ -118,13 +128,18 @@ print(f"tool description: {tavily_search_tool.description}")
 print("==========="*4)
 
 result = tavily_search_tool.invoke("2010년 ~ 2024년 대한민국의 1인당 GDP는?")
+result = tavily_search_tool.invoke({"query": "2010년 ~ 2024년 대한민국의 1인당 GDP는?"})
 result
 ```
 
 ```bash
 ============================================
 tool name: tavily_search_tool
-tool description: Use this tool to search the web using Tavily.
+tool description: Search the web using Tavily and return a list of relevant documents. 
+
+Provide a search query as input. 
+Returns a list of documents containing raw content from search results. 
+Use this tool to retrieve up-to-date web information.
 ============================================
 
 {'query': '2010년 ~ 2024년까지의 대한민국의 1인당 GDP는?',
@@ -160,16 +175,37 @@ googlenews_instance = GoogleNews()
 
 @tool
 def googlenews_search_tool(query: str) -> List[Dict[str, str]]:
-    """Look up news by keyword"""
-    return googlenews_instance.search_by_keyword(query, k=3)
+    """
+    Searches Google News for recent articles related to the given keyword.
+
+    Returns a list of dictionaries, each containing article metadata such as title, link, and content.
+    """
+    try:
+        return googlenews_instance.search_by_keyword(query, k=3)
+    except Exception as e:
+        error_msg = f"[GoogleNews Error] {type(e).__name__}: {str(e)}"
+        print(error_msg)
+        return [{"error": error_msg}]
 ```
 
 ```python
+print("==========="*4)
+print(f"tool name: {googlenews_search_tool.name}")
+print(f"tool description: {googlenews_search_tool.description}")
+print("==========="*4)
+
 googlenews_search_tool.invoke("AI 뉴스 알려줘") # ok
 # googlenews_search_tool.invoke({'query':"AI 뉴스 알려줘"}) # ok
 ```
 
 ```bash
+============================================ 
+tool name: googlenews_search_tool 
+tool description: Searches Google News for recent articles related to the given keyword.
+
+Returns a list of dictionaries, each containing article metadata such as title, link, and content.
+============================================
+
 [{'url': 'https://news.google.com/rss/articles/CBMiW0FVX3lxTFBmdmdiN3B1V2F5Mmc3alBDVElDM3NMcVlFT0x1NU5QcFoydkdwbmtEcF9rR1JNUHh1VWlzYjgtVG5abXgyYzBWRWlwb0c5dFlneE5zVTI2SUVXOEXSAWBBVV95cUxPRmViYzJSRWZ3UFpMLWMxX19sc3Zld2lzY3gtZEJXLWZ5ZjdYN3gyUV9HRG5FVkR5NmhlVmxuLTFaZkVTWU1TMHRBWmRmbzROOVp3TWozZHVmelhWakstUjI?oc=5',
   'content': '"딥시크, 랜섬웨어·화염병 정보 알려줘…범죄 악용 우려" - 연합뉴스'},
  {'url': 'https://news.google.com/rss/articles/CBMiZ0FVX3lxTE1MVDAyWkRRa0c4Rlh4UnBuVEUxamJ6RWJCcWpxSHhKeUFGQ1hZZEZQRHEyMFhTRnJhNzBiTU1xcjROVkJJdVlYV0RUSUgtTjJtLUNGZG8wSkRlZl9zb2VfTi1DSDBpc1k?oc=5',
@@ -186,16 +222,38 @@ from langchain_core.tools import tool
 
 @tool
 def get_current_datetime_tool() -> str:
-    """Returns the current date and time."""
-    now = datetime.now()
-    return now.strftime("Today is %B %d, %Y at %H:%M.")
+    """
+    Returns the current date and time in a human-readable format.
+
+    Format: 'Today is Month Day, Year at HH:MM.'
+    Example: 'Today is July 11, 2025 at 16:45.'
+    """
+    try:
+        now = datetime.now()
+        return now.strftime("Today is %B %d, %Y at %H:%M.")
+    except Exception as e:
+        error_msg = f"[Datetime Error] {type(e).__name__}: {str(e)}"
+        print(error_msg)
+        return [{"error": error_msg}]
 ```
 
 ```python
+print("==========="*4)
+print(f"tool name: {get_current_datetime_tool.name}")
+print(f"tool description: {get_current_datetime_tool.description}")
+print("==========="*4)
+
 # get_current_datetime_tool.invoke("What is today's date?") # ok
 get_current_datetime_tool.invoke({'query':"What is today's date?"}) # ok
 ```
 
 ```bash
+============================================ 
+tool name: get_current_datetime_tool 
+tool description: Returns the current date and time in a human-readable format. 
+
+Format: 'Today is Month Day, Year at HH:MM.' 
+Example: 'Today is July 11, 2025 at 16:45.' ============================================
+
 'Today is July 10, 2025 at 22:11.'
 ```

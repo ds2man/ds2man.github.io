@@ -13,13 +13,15 @@ math: true
 pin: true
 ---
 
-LangChain is a powerful framework that simplifies the process of building applications powered by large language models (LLMs). One of its key strengths lies in its **extensive collection of built-in tools** that help developers seamlessly integrate external capabilities into their LLM workflows.
+LangChain is a powerful framework that simplifies the process of building applications powered by large language models (LLMs). One of its key strengths lies in its **extensive and flexible tool system**, which allows developers to seamlessly connect LLMs with the outside world.
 
-In this post, we'll explore some of the most commonly used [built-in tools](https://python.langchain.com/docs/integrations/tools/) in LangChain and how they can accelerate the development of intelligent, agent-driven applications.
+In LangChain, **tools act like the “arms and legs” of an agent**, enabling it to interact with external systems—whether it’s performing a web search, calling an API, doing math, or querying a database. And in **LangGraph**, tools can also serve as **independent function nodes**, forming the building blocks of complex, state-based workflows.
 
-There are so many built-in tools that it's impossible to learn them all. Instead, I will continuously add the tools I come across while working to this post.
+In this post, we’ll explore some of the most commonly used [built-in tools](https://python.langchain.com/docs/integrations/tools/) in LangChain and how they can accelerate the development of intelligent, agent-based and workflow-driven applications.
 
-## *PythonREPLTool vs PythonAstREPLTool vs PythonREPL*
+There are so many built-in tools that it’s impossible to learn them all at once. Instead, I will continuously update this post with tools I encounter in real-world use cases.
+
+## *PythonREPLTool*
 
 When using LangChain, there are times when it's essential to have the LLM execute Python code. To support this, LangChain offers various Python execution tools. In this post, we'll compare three main tools provided by the `langchain.experimental` module.
 
@@ -32,11 +34,13 @@ code = "print(2 + 3 * 5)" # 17
 code = "print(sum([1, 2, 3, 4]))" # 10
 code = "import os; print(os.getcwd())" # d:\02.MyCode\GP-MyReference\13.MyLLM
 result = repl_tool.invoke(code) # repl_tool.run(code), ok!
+result = repl_tool.invoke({"query" : code}) # ok!
 repl_tool.invoke("""
 def square(x):
     return x * x
 """)
-result = repl_tool.invoke("print(square(5))") # 25
+# result = repl_tool.invoke("print(square(5))") # ok!
+result = repl_tool.invoke({"query" : "print(square(5))"}) # ok!
 print("REPL Result:", result)  # → 50
 
 print("==========="*4)
@@ -45,12 +49,14 @@ ast_tool = PythonAstREPLTool()
 code = "print(2 + 3 * 5)" # 17
 code = "print(sum([1, 2, 3, 4]))" # 10
 code = "import os; print(os.getcwd())" # d:\02.MyCode\GP-MyReference\13.MyLLM
-result = ast_tool.invoke(code) # ast_tool.run(code), ok!
+# result = ast_tool.invoke(code) # ast_tool.run(code), ok!
+result = ast_tool.invoke({"query" : code}) # ok!
 ast_tool.invoke("""
 def square(x):
     return x * x
 """)
-result = ast_tool.invoke("print(square(5))") # 25
+# result = ast_tool.invoke("print(square(5))") # ok!
+result = ast_tool.invoke({"query" : "print(square(5))"}) # ok!
 print("AST Result:", result)  # → 17
 
 print("==========="*4)
@@ -59,12 +65,14 @@ repl  = PythonREPL()
 code = "print(2 + 3 * 5)" # 17
 code = "print(sum([1, 2, 3, 4]))" # 10
 code = "import os; print(os.getcwd())" # d:\02.MyCode\GP-MyReference\13.MyLLM
-result = repl.run(code) # repl.run(code), no!
+result = repl.run(code) # ok!
+# result = repl.run({"query" : code}) → no!, repl.invoke(code) → no!
 repl.run("""
 def square(x):
     return x * x
 """)
-result = repl.run("print(square(5))") # 25
+result = repl.run("print(square(5))") # ok!
+# result = repl.run({"query" : "print(square(5))"}) → no!, repl.invoke("print(square(5))") → no!
 print("Raw REPL Result:", result)  # → 10
 ~~~
 
@@ -79,13 +87,9 @@ print("Raw REPL Result:", result)  # → 10
 
 It’s worth considering which of these tools is best suited for your needs. I plan to allow the LLM to freely generate and execute code through an Agent. According to the [LangChain documentation](https://python.langchain.com/api_reference/experimental/tools/langchain_experimental.tools.python.tool.PythonREPLTool.html#), `PythonREPLTool` seems to be the primary REPL tool in use. If possible, I intend to use `PythonREPLTool` as well.
 
-<!--
-위 표로 각각의 도구중에 어떤것이 좋을지는 고민해 볼 필요가 있다. 나는 앞으로 Agent를 통해서 LLM이 자유롭게 코드를 생성하고 실행하게 할 예정이다. LangChain 문서에서 REPL도구로 PythonREPLTool을 주로 사용하고 있는거 같다. 나는 가능하면 PythonREPLTool로 사용하려 한다.
--->
-
 ## *TavilySearch*
 
-When building LLM-powered applications, real-time access to the web can significantly boost the quality and accuracy of responses. One of the emerging tools that makes this easy in LangChain is **TavilySearch**—a fast and reliable web search API.
+When building LLM-powered applications, real-time access to the web can significantly boost the quality and accuracy of responses. One of the emerging tools that makes this easy in LangChain is **TavilySearch** - a fast and reliable web search API.
 
 - Sign up for [Tavily](https://www.tavily.com/) and issue an API key.
      ![Tavily API](/assets/img/langgraph/2025-05-12-LangGraph1_1.png)
