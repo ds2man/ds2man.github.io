@@ -198,13 +198,13 @@ This agent will now be able to choose which tool to call and with what inputs, b
 from langchain_openai import ChatOpenAI
 from langchain.agents import create_tool_calling_agent
 
-os.environ["OPENAI_API_KEY"] = "**************************"
-openai_base_url = "**************************"
+openai_api_key = os.environ["OPENROUTER_API_KEY"]
+openai_api_base = os.environ["OPENROUTER_ENDPOINT"]
 
 my_llm = ChatOpenAI(
     model="meta-llama/llama-4-maverick",
-    openai_api_base=openai_base_url,
-    openai_api_key=os.environ["OPENAI_API_KEY"],
+    openai_api_base=openai_api_base,
+    openai_api_key=openai_api_key
 )
 
 my_agent = create_tool_calling_agent(llm=my_llm, tools=my_tools, prompt=my_prompt)
