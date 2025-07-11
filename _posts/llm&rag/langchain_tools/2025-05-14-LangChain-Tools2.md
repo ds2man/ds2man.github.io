@@ -257,3 +257,105 @@ Example: 'Today is July 11, 2025 at 16:45.' ====================================
 
 'Today is July 10, 2025 at 22:11.'
 ```
+
+### *pdf_retriever_tool*
+
+```python
+from langchain.document_loaders import PyMuPDFLoader
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain_community.vectorstores import FAISS
+from langchain_huggingface import HuggingFaceEmbeddings
+from langchain_core.tools import tool
+
+loader = PyMuPDFLoader("zData/SPRI_AI_Brief.pdf")
+text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=100)
+split_docs = loader.load_and_split(text_splitter)
+embeddings = HuggingFaceEmbeddings(model_name="./Pretrained_byGit/bge-m3")
+vector = FAISS.from_documents(split_docs, embeddings)
+
+retriever = vector.as_retriever()
+
+@tool
+def pdf_retriever_tool(query: str) -> str:
+    """
+    Search information from the PDF document using semantic similarity.
+
+    Provide a question or keyword, and this tool will return relevant chunks from the document.
+    """
+    docs = retriever.invoke(query)
+    return "\n\n".join([doc.page_content for doc in docs])
+```
+
+```python
+print("==========="*4)
+print(f"tool name: {pdf_retriever_tool.name}")
+print(f"tool description: {pdf_retriever_tool.description}")
+print("==========="*4)
+
+# pdf_retriever_tool.invoke("삼성전자가 개발한 생성형 AI 관련 내용을 문서에서 찾아줘") # ok
+pdf_retriever_tool.invoke({'query':"삼성전자가 개발한 생성형 AI 관련된 정보를 문서에서 찾아주세요."}) # ok
+```
+
+```bash
+============================================
+도구 이름: pdf_search_tool
+도구 설명: Search information from the PDF document using semantic similarity.
+
+Provide a question or keyword, and this tool will return relevant chunks from the document.
+============================================
+SPRi AI Brief |  
+2023-12월호
+10
+삼성전자, 자체 개발 생성 AI ‘삼성 가우스’ 공개
+n 삼성전자가 온디바이스에서 작동 가능하며 언어, 코드, 이미지의 3개 모델로 구성된 자체 개발 생성 
+AI 모델 ‘삼성 가우스’를 공개
+n 삼성전자는 삼성 가우스를 다양한 제품에 단계적으로 탑재할 계획으로, 온디바이스 작동이 가능한 
+삼성 가우스는 외부로 사용자 정보가 유출될 위험이 없다는 장점을 보유
+KEY Contents
+£ 언어, 코드, 이미지의 3개 모델로 구성된 삼성 가우스, 온디바이스 작동 지원
+n 삼성전자가 2023년 11월 8일 열린 ‘삼성 AI 포럼 2023’ 행사에서 자체 개발한 생성 AI 모델 
+‘삼성 가우스’를 최초 공개
+∙정규분포 이론을 정립한 천재 수학자 가우스(Gauss)의 이름을 본뜬 삼성 가우스는 다양한 상황에 
+최적화된 크기의 모델 선택이 가능
+∙삼성 가우스는 라이선스나 개인정보를 침해하지 않는 안전한 데이터를 통해 학습되었으며, 
+온디바이스에서 작동하도록 설계되어 외부로 사용자의 정보가 유출되지 않는 장점을 보유
+∙삼성전자는 삼성 가우스를 활용한 온디바이스 AI 기술도 소개했으며, 생성 AI 모델을 다양한 제품에 
+단계적으로 탑재할 계획
+n 삼성 가우스는 △텍스트를 생성하는 언어모델 △코드를 생성하는 코드 모델 △이미지를 생성하는 
+이미지 모델의 3개 모델로 구성
+∙언어 모델은 클라우드와 온디바이스 대상 다양한 모델로 구성되며, 메일 작성, 문서 요약, 번역 업무의 
+처리를 지원
+∙코드 모델 기반의 AI 코딩 어시스턴트 ‘코드아이(code.i)’는 대화형 인터페이스로 서비스를 제공하며 
+사내 소프트웨어 개발에 최적화
+∙이미지 모델은 창의적인 이미지를 생성하고 기존 이미지를 원하는 대로 바꿀 수 있도록 지원하며 
+저해상도 이미지의 고해상도 전환도 지원
+n IT 전문지 테크리퍼블릭(TechRepublic)은 온디바이스 AI가 주요 기술 트렌드로 부상했다며,
+
+∙이 플랫폼은 데이터 관리, 모델 배포와 평가, 신속한 엔지니어링을 위한 종합 도구 모음을 제공하여 
+다양한 기업들이 맞춤형 AI 모델을 한층 쉽게 개발할 수 있도록 지원
+∙생성 AI 개발에 필요한 컴퓨팅과 데이터 처리 요구사항을 지원하기 위해 AI 플랫폼(PAI), 
+데이터베이스 솔루션, 컨테이너 서비스와 같은 클라우드 신제품도 발표
+n 알리바바 클라우드는 AI 개발을 촉진하기 위해 올해 말까지 720억 개 매개변수를 가진 통이치엔원 
+모델을 오픈소스화한다는 계획도 공개
+☞ 출처 : Alibaba Cloud, Alibaba Cloud Launches Tongyi Qianwen 2.0 and Industry-specific Models to Support 
+Customers Reap Benefits of Generative AI, 2023.10.31.
+
+Ⅰ. 인공지능 산업 동향 브리프
+
+2023년 12월호
+Ⅰ. 인공지능 산업 동향 브리프
+ 1. 정책/법제 
+   ▹ 미국, 안전하고 신뢰할 수 있는 AI 개발과 사용에 관한 행정명령 발표  ························· 1
+   ▹ G7, 히로시마 AI 프로세스를 통해 AI 기업 대상 국제 행동강령에 합의··························· 2
+   ▹ 영국 AI 안전성 정상회의에 참가한 28개국, AI 위험에 공동 대응 선언··························· 3
+   ▹ 미국 법원, 예술가들이 생성 AI 기업에 제기한 저작권 소송 기각····································· 4
+   ▹ 미국 연방거래위원회, 저작권청에 소비자 보호와 경쟁 측면의 AI 의견서 제출················· 5
+   ▹ EU AI 법 3자 협상, 기반모델 규제 관련 견해차로 난항··················································· 6
+ 
+ 2. 기업/산업 
+   ▹ 미국 프런티어 모델 포럼, 1,000만 달러 규모의 AI 안전 기금 조성································ 7
+   ▹ 코히어, 데이터 투명성 확보를 위한 데이터 출처 탐색기 공개  ······································· 8
+   ▹ 알리바바 클라우드, 최신 LLM ‘통이치엔원 2.0’ 공개 ······················································ 9
+   ▹ 삼성전자, 자체 개발 생성 AI ‘삼성 가우스’ 공개 ··························································· 10
+   ▹ 구글, 앤스로픽에 20억 달러 투자로 생성 AI 협력 강화 ················································ 11
+```
