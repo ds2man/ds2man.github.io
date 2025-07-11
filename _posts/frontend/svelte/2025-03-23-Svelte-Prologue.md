@@ -2,7 +2,7 @@
 title: Svelte Prologue
 description: Let’s Use Svelte Like This
 author: DS2Man
-date: 2025-03-24 11:00:00 +0000
+date: 2025-03-23 11:00:00 +0000
 categories: [Frontend, S-Prologue]
 tags: [Frontend]
 math: true

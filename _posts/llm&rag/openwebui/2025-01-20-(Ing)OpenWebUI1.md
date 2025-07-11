@@ -1,13 +1,18 @@
 ---
-title: Svelte Prologue
-description: Let’s Use Svelte Like This
+title: Use OpenWebUI-Day1
+description: Let’s explore the features of OpenWebUI.
 author: DS2Man
-date: 2125-03-24 11:00:00 +0000
-categories: [Frontend, Svelte]
-tags: [Frontend]
+date: 2125-02-19 11:00:00 +0000
+categories: [LLM&RAG, L&R-OpenWebUI]
+tags:
+  - Ollama, RAG, OpenWebUI
 math: true
 pin: true
 ---
+
+<!-- OpenWebUI 사용법 숙지
+https://docs.openwebui.com/
+-->
 
 ## *OpenWebUI*
 
@@ -29,6 +34,3 @@ https://www.youtube.com/playlist?list=PL_rTgQnnMXsXAsEiid-tWhaj03SsP4U5Z
 
 ![OpenWebUI](/assets/img/svelte/2025-03-23-SVELTE0_1.gif)
 _OpenWebUI(Source: [OpenWebUI](https://docs.openwebui.com/))_
-
-
-
