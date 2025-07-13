@@ -7,6 +7,7 @@ categories: [LLM&RAG, L&R-LangGraph]
 tags:
   - RAG
   - LangGraph
+  - LangChain
 math: true
 pin: true
 ---
