@@ -2,7 +2,7 @@
 title: A Review of the AWS Summit Seoul 2025 
 description: 
 author: DS2Man
-date: 2025-05-16 11:00:00 +0000
+date: 2025-05-18 11:00:00 +0000
 categories: [Mylife, Exhibition]
 tags:
   - Mylife

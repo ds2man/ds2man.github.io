@@ -2,7 +2,7 @@
 title: Learning how to use LangGraph
 description: Let's make and use AI Agent with ChatOllama.
 author: DS2Man
-date: 2025-05-22 11:00:00 +0000
+date: 3025-05-22 11:00:00 +0000
 categories: [LLM&RAG, L&R-LangGraph]
 tags:
   - RAG
