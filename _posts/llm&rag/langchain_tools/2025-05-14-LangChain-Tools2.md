@@ -167,7 +167,7 @@ Use this tool to retrieve up-to-date web information.
 ### *googlenews_search_tool*
 
 ```python
-from langchain_teddynote.tools import GoogleNews
+from ai.tools.search_web import GoogleNews
 from langchain.tools import tool
 from typing import List, Dict
 
