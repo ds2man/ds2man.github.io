@@ -3,7 +3,7 @@ title: LangChain Custom Tools
 description: Let's build custom tools in LangChain.
 author: DS2Man
 date: 2025-05-14 11:00:00 +0000
-categories: [LLM&RAG, L&R-Tools]
+categories: [LLM&RAG, L&R-Agent]
 tags:
   - LangChain
   - Agent

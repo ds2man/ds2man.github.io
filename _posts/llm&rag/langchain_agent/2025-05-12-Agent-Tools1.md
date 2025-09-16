@@ -3,7 +3,7 @@ title: LangChain Tools/Toolkits
 description: Let's explore various built-in tools.
 author: DS2Man
 date: 2025-05-12 11:00:00 +0000
-categories: [LLM&RAG, L&R-Tools]
+categories: [LLM&RAG, L&R-Agent]
 tags:
   - LangChain
   - Agent
