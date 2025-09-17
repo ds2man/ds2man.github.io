@@ -1,0 +1,7 @@
+# [jaoneol]2025-09-17 10:25, Google 색인용 robots.txt 생성 및 사이트맵 URL 수정
+# 모든 크롤러 허용
+User-agent: *
+Disallow: /norobots/
+
+# 사이트맵 위치 (프로덕션 URL)
+Sitemap: https://ds2man.github.io/sitemap.xml
