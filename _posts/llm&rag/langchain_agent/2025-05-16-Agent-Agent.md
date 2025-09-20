@@ -99,7 +99,7 @@ def tavily_search_tool(query: str):
 #############################################################################
 # googlenews_search_tool
 #############################################################################
-from langchain_teddynote.tools import GoogleNews
+from ai.tools.search_web import GoogleNews
 from langchain.tools import tool
 from typing import List, Dict
 

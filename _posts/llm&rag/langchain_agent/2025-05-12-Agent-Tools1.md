@@ -92,7 +92,7 @@ It’s worth considering which of these tools is best suited for your needs. I p
 When building LLM-powered applications, real-time access to the web can significantly boost the quality and accuracy of responses. One of the emerging tools that makes this easy in LangChain is **TavilySearch** - a fast and reliable web search API.
 
 - Sign up for [Tavily](https://www.tavily.com/) and issue an API key.
-     ![Tavily API](/assets/img/langgraph/2025-05-12-LangGraph1_1.png)
+     ![Tavily API](/assets/img/langchain_agent/2025-05-12-Agent1_1.png)
 	_Tavily API_
 
 
