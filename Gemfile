@@ -8,7 +8,7 @@ gemspec
 gem "jekyll-sitemap"
 gem "jekyll-feed" # [jaoneol]2025-09-17 10:40, CI 에러 해결: jekyll-feed 의존성 추가
 
-gem "html-proofer", "~> 5.0", group: :test
+gem "html-proofer", "~> 5.2", group: :test
 
 platforms :mingw, :x64_mingw, :mswin, :jruby do
   gem "tzinfo", ">= 1", "< 3"
